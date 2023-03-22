@@ -95,7 +95,7 @@ alias l='ls -CF'
 alias dev='cd Documents/work/rologymvp/'
 alias pull='git pull'
 alias push='git push'
-
+alias unzip 'atool --extract --explain $1'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
