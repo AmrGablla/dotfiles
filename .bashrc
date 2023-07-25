@@ -178,5 +178,8 @@ function tmux_attach_or_create() {
     fi
 }
 
-# Call the function to attach or create tmux session
-tmux_attach_or_create
+# make this edits in vscode https://askubuntu.com/questions/1042740/bash-how-to-determine-whether-terminal-is-opened-by-third-party-app
+if  ! [ -n "$visual_studio" ]; then
+    tmux_attach_or_create
+fi 
+
