@@ -47,12 +47,12 @@ esac
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+    # We have color support; assume it's compliant with Ecma-48
+    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+    # a case would tend to support setf rather than setaf.)
+    color_prompt=yes
     else
-	color_prompt=
+    color_prompt=
     fi
 fi
 
@@ -95,7 +95,9 @@ alias l='ls -CF'
 alias dev='cd Documents/work/rologymvp/'
 alias pull='git pull'
 alias push='git push'
-alias unzip 'atool --extract --explain $1'
+alias status='git status'
+alias commit='git commit'
+
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -136,3 +138,45 @@ eval "$(pyenv virtualenv-init -)"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+
+# Function to check if tmux is installed
+function check_tmux() {
+    if command -v tmux &>/dev/null; then
+        return 0 # tmux is installed
+    else
+        return 1 # tmux is not installed
+    fi
+}
+function tmux_attach(){
+    SESSION_NAME="my_session"
+
+    if [[ -z "$TMUX" ]]; then
+         tmux attach -t "$SESSION_NAME"
+    else
+        tmux switch-client -t "$SESSION_NAME"
+    fi
+}
+
+# Function to attach to an existing session or create a new one
+function tmux_attach_or_create() {
+    SESSION_NAME="my_session"
+
+    if check_tmux; then
+        # tmux is installed
+        if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+            tmux new-session -d -s "$SESSION_NAME"    
+            tmux send-keys -t "$SESSION_NAME".0   "task list" ENTER
+           tmux_attach
+        fi
+            tmux_attach
+    else
+        # tmux is not installed
+        echo "tmux is not installed. Cannot create or attach to a session."
+    fi
+}
+
+# Call the function to attach or create tmux session
+tmux_attach_or_create
